@@ -63,7 +63,6 @@ public class TravelService {
         travel.setStartDate(jsonTravel.get("startDate") != null ? parseStartDate(jsonTravel) : travel.getStartDate());
         travel.setEndDate(jsonTravel.get("endDate") != null ? parseEndDate(jsonTravel) : travel.getEndDate());
         travel.setType(type != null ? TravelTypeEnum.getEnum(type) : travel.getType());
-
     }
 
     public Travel createTravel(String jsonString) throws Exception {
@@ -88,6 +87,7 @@ public class TravelService {
                 stmt.execute();
 
                 ResultSet generatedKey = stmt.getGeneratedKeys();
+
                 if (generatedKey.next()) {
                     travel.setId(generatedKey.getLong(1));
                     return travel;
@@ -95,13 +95,7 @@ public class TravelService {
 
                 return null;
             }
-
-        } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            throw e;
-
         }
-
     }
 
     public Travel updateTravel(String jsonString, Travel travel) throws Exception {
@@ -142,11 +136,6 @@ public class TravelService {
 
                 return updatedTravel;
             }
-
-        } catch (Exception e) {
-            System.out.println("SQLException: " + e.getMessage());
-            throw e;
-
         }
     }
 
@@ -155,13 +144,7 @@ public class TravelService {
             String queryId = String.valueOf(id);
             String query = String.format("DELETE FROM Travels where ID = %s", queryId);
             stmt.executeUpdate(query);
-
-        } catch (Exception e) {
-            System.out.println("SQLException: " + e.getMessage());
-            throw e;
-
         }
-
     }
 
     public List<Travel> findAllTravels() throws Exception {
@@ -169,6 +152,7 @@ public class TravelService {
             String query = "SELECT * FROM Travels.Travels";
             try (ResultSet rs = stmt.executeQuery(query)) {
                 List<Travel> travels = new ArrayList<>();
+
                 while (rs.next()) {
                     Travel foundTravel = new Travel();
                     foundTravel.setId(Long.valueOf(rs.getInt("id")));
@@ -179,11 +163,7 @@ public class TravelService {
                     travels.add(foundTravel);
                 }
                 return travels;
-
             }
-        } catch (Exception e) {
-            System.out.println("SQLException: " + e);
-            throw e;
         }
     }
 
@@ -207,10 +187,6 @@ public class TravelService {
 
                 return null;
             }
-
-        } catch (Exception e) {
-            System.out.println("SQLException: " + e.getMessage());
-            throw e;
         }
     }
 
@@ -218,11 +194,6 @@ public class TravelService {
         try (Connection conn = MySqlConnection.getConnection(); Statement stmt = conn.createStatement()) {
             String query = "TRUNCATE TABLE Travels";
             stmt.executeUpdate(query);
-
-        } catch (Exception e) {
-            System.out.println("SQLException: " + e.getMessage());
-            throw e;
-
         }
     }
 }

@@ -20,62 +20,43 @@ public class AppExceptionsHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { SQLException.class })
     public ResponseEntity<Object> handleSqlException(SQLException ex) {
-
-        ApiError errorMessage = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(),
-                ex.getClass().getSimpleName());
-
-        return new ResponseEntity<Object>(errorMessage, new HttpHeaders(), errorMessage.getStatus());
-
+        return this.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
 
-    @ExceptionHandler(value = { Exception.class, RuntimeException.class })
-    public ResponseEntity<Object> handleSqlException(Exception ex) {
-
-        ApiError errorMessage = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(),
-                ex.getClass().getSimpleName());
-
-        return new ResponseEntity<Object>(errorMessage, new HttpHeaders(), errorMessage.getStatus());
-
+    @ExceptionHandler(value = { Exception.class })
+    public ResponseEntity<Object> handleGenericException(Exception ex) {
+        return this.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
 
     @ExceptionHandler(value = { InvalidFormatException.class })
     public ResponseEntity<Object> handleInvalidFormatException(Exception ex) {
-
-        ApiError errorMessage = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),
-                ex.getClass().getSimpleName());
-
-        return new ResponseEntity<Object>(errorMessage, new HttpHeaders(), errorMessage.getStatus());
-
+        return this.buildResponse(HttpStatus.BAD_REQUEST, ex);
     }
 
     @ExceptionHandler(value = { CommunicationsException.class })
     public ResponseEntity<Object> handleCommunicatioException(Exception ex) {
-
-        ApiError errorMessage = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR,
-                "Database is down, please try again later", ex.getClass().getSimpleName());
-
-        return new ResponseEntity<Object>(errorMessage, new HttpHeaders(), errorMessage.getStatus());
-
+        return this.buildResponse(HttpStatus.NOT_FOUND, ex, "Database is down, please try again later");
     }
 
     @ExceptionHandler(value = { NotFoundException.class })
     public ResponseEntity<Object> handleNotFoundException(Exception ex) {
-
-        ApiError errorMessage = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(),
-                ex.getClass().getSimpleName());
-
-        return new ResponseEntity<Object>(errorMessage, new HttpHeaders(), errorMessage.getStatus());
-
+        return this.buildResponse(HttpStatus.NOT_FOUND, ex);
     }
 
     @ExceptionHandler(value = { WrongDateException.class })
     public ResponseEntity<Object> handleWrongDateException(Exception ex) {
-
-        ApiError errorMessage = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),
-                ex.getClass().getSimpleName());
-
-        return new ResponseEntity<Object>(errorMessage, new HttpHeaders(), errorMessage.getStatus());
-
+        return this.buildResponse(HttpStatus.BAD_REQUEST, ex);
     }
 
+    private ResponseEntity<Object> buildResponse(HttpStatus status, Exception ex) {
+        System.out.println("Exception: " + ex.getMessage());
+        ApiError errorMessage = new ApiError(status, ex.getLocalizedMessage(), ex.getClass().getSimpleName());
+        return new ResponseEntity<Object>(errorMessage, new HttpHeaders(), errorMessage.getStatus());
+    }
+
+    private ResponseEntity<Object> buildResponse(HttpStatus status, Exception ex, String message) {
+        System.out.println("Exception: " + ex.getMessage());
+        ApiError errorMessage = new ApiError(status, message, ex.getClass().getSimpleName());
+        return new ResponseEntity<Object>(errorMessage, new HttpHeaders(), errorMessage.getStatus());
+    }
 }
