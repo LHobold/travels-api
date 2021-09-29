@@ -16,10 +16,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.HttpStatus;
 
 import com.example.travelsjavaapi.service.TravelService;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import com.example.travelsjavaapi.exceptions.NotFoundException;
 import com.example.travelsjavaapi.model.Travel;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -36,102 +35,75 @@ public class TravelController {
         private TravelService travelService;
 
         @GetMapping
-        public ResponseEntity<List<Travel>> find() {
-                try {
-                        if (travelService.findAllTravels().isEmpty()) {
-                                return ResponseEntity.notFound().build();
-                        }
-                        // LOGGER.info(travelService.findAllTravels().toString());
-                        return ResponseEntity.ok(travelService.findAllTravels());
+        public ResponseEntity<List<Travel>> find() throws Exception {
 
-                } catch (Exception e) {
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                if (travelService.findAllTravels().isEmpty()) {
+                        throw new NotFoundException("There are no travels registered");
                 }
+                // LOGGER.info(travelService.findAllTravels().toString());
+                return ResponseEntity.ok(travelService.findAllTravels());
 
         }
 
         @GetMapping(path = "/{id}")
-        public ResponseEntity<Travel> findOne(@PathVariable("id") long id) {
-                try {
-                        Travel foundTravel = travelService.findTravelById(id);
-                        if (foundTravel == null) {
-                                return ResponseEntity.notFound().build();
-                        }
-                        return ResponseEntity.ok(foundTravel);
-                } catch (Exception e) {
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        public ResponseEntity<Travel> findOne(@PathVariable("id") long id) throws Exception {
+
+                Travel foundTravel = travelService.findTravelById(id);
+                if (foundTravel == null) {
+                        throw new NotFoundException("Could not find an travel with id: " + id);
 
                 }
+                return ResponseEntity.ok(foundTravel);
+
         }
 
         @PostMapping
-        public ResponseEntity<Travel> createTravel(@RequestBody String travel) {
-                try {
-                        Travel createdTravel = travelService.createTravel(travel);
-                        if (createdTravel == null) {
-                                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-                        }
-                        System.out.println(createdTravel);
-                        var uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                                        .path((String.valueOf(createdTravel.getId()))).build().toUri();
-
-                        return ResponseEntity.created(uri).body(createdTravel);
-                } catch (SQLException e) {
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-                } catch (UnrecognizedPropertyException e) {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-                } catch (Exception e) {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        public ResponseEntity<Travel> createTravel(@RequestBody String travel) throws Exception {
+                Travel createdTravel = travelService.createTravel(travel);
+                if (createdTravel == null) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
                 }
+                System.out.println(createdTravel);
+                var uri = ServletUriComponentsBuilder.fromCurrentRequest().path((String.valueOf(createdTravel.getId())))
+                                .build().toUri();
+
+                return ResponseEntity.created(uri).body(createdTravel);
+
         }
 
         @DeleteMapping
-        public ResponseEntity<Boolean> deleteAllTravels() {
-                try {
-                        travelService.deleteAllTravels();
-                        return ResponseEntity.noContent().build();
-                } catch (Exception e) {
-                        LOGGER.error(e.getMessage());
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        public ResponseEntity<Boolean> deleteAllTravels() throws Exception {
 
-                }
+                travelService.deleteAllTravels();
+                return ResponseEntity.noContent().build();
+
         }
 
         @DeleteMapping(path = "/{id}")
-        public ResponseEntity<Boolean> deleteOneTravel(@PathVariable("id") long id) {
+        public ResponseEntity<Boolean> deleteOneTravel(@PathVariable("id") long id) throws Exception {
 
-                try {
-                        Travel foundTravel = travelService.findTravelById(id);
-                        if (foundTravel == null) {
-                                return ResponseEntity.notFound().build();
-                        }
-                        travelService.deleteTravel(id);
-                        return ResponseEntity.noContent().build();
-
-                } catch (Exception e) {
-                        LOGGER.error(e.getMessage());
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+                Travel foundTravel = travelService.findTravelById(id);
+                if (foundTravel == null) {
+                        throw new NotFoundException("Could not find an travel with id: " + id);
                 }
+                travelService.deleteTravel(id);
+                return ResponseEntity.noContent().build();
 
         }
 
         @PutMapping(path = "/{id}")
         @ResponseBody
-        public ResponseEntity<Travel> updateTravel(@PathVariable("id") long id, @RequestBody String updateFields) {
-                try {
-                        Travel travelToUpdate = travelService.findTravelById(id);
-                        if (travelToUpdate == null) {
-                                LOGGER.error("Travel not found.");
-                                return ResponseEntity.notFound().build();
-                        }
+        public ResponseEntity<Travel> updateTravel(@PathVariable("id") long id, @RequestBody String updateFields)
+                        throws Exception {
 
-                        Travel updatedTravel = travelService.updateTravel(updateFields, travelToUpdate);
-                        return ResponseEntity.ok(updatedTravel);
-
-                } catch (Exception e) {
-                        LOGGER.error("JSON fields are not parsable. " + e);
-                        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
+                Travel travelToUpdate = travelService.findTravelById(id);
+                if (travelToUpdate == null) {
+                        LOGGER.error("Travel not found.");
+                        throw new NotFoundException("Could not find an travel with id: " + id);
                 }
+
+                Travel updatedTravel = travelService.updateTravel(updateFields, travelToUpdate);
+                return ResponseEntity.ok(updatedTravel);
 
         }
 

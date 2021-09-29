@@ -1,7 +1,9 @@
 package com.example.travelsjavaapi.service;
 
 import com.example.travelsjavaapi.enumeration.TravelTypeEnum;
+import com.example.travelsjavaapi.exceptions.WrongDateException;
 import com.example.travelsjavaapi.utils.MySqlConnection;
+import com.example.travelsjavaapi.model.Travel;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -9,7 +11,6 @@ import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
@@ -22,8 +23,6 @@ import java.time.format.DateTimeFormatter;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.example.travelsjavaapi.model.Travel;
 
 import org.springframework.stereotype.Service;
 
@@ -67,14 +66,14 @@ public class TravelService {
 
     }
 
-    public Travel createTravel(String jsonString) throws Exception, SQLException, UnrecognizedPropertyException {
+    public Travel createTravel(String jsonString) throws Exception {
 
         try (Connection conn = MySqlConnection.getConnection();) {
             objectMapper.registerModule(new JavaTimeModule());
             Travel travel = objectMapper.readValue(jsonString, Travel.class);
 
             if (isStartDateGreaterThanEnd(travel)) {
-                return null;
+                throw new WrongDateException("The provided start date is greater than the end date!");
             }
 
             Timestamp sqlStartDate = Timestamp.valueOf(travel.getStartDate());
@@ -97,12 +96,6 @@ public class TravelService {
                 return null;
             }
 
-        } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            throw e;
-        } catch (UnrecognizedPropertyException e) {
-            System.out.println("JsonException: " + e.getMessage());
-            throw e;
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
             throw e;
@@ -150,7 +143,7 @@ public class TravelService {
                 return updatedTravel;
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("SQLException: " + e.getMessage());
             throw e;
 
@@ -163,7 +156,7 @@ public class TravelService {
             String query = String.format("DELETE FROM Travels where ID = %s", queryId);
             stmt.executeUpdate(query);
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("SQLException: " + e.getMessage());
             throw e;
 
@@ -188,7 +181,7 @@ public class TravelService {
                 return travels;
 
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("SQLException: " + e);
             throw e;
         }
@@ -215,7 +208,7 @@ public class TravelService {
                 return null;
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("SQLException: " + e.getMessage());
             throw e;
         }
@@ -226,7 +219,7 @@ public class TravelService {
             String query = "TRUNCATE TABLE Travels";
             stmt.executeUpdate(query);
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("SQLException: " + e.getMessage());
             throw e;
 
