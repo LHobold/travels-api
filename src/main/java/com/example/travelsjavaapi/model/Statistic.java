@@ -16,5 +16,4 @@ public class Statistic {
     private BigDecimal max;
     private BigDecimal min;
     private long count;
-
 }

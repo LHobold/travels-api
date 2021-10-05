@@ -32,7 +32,6 @@ public class StatisticsService {
                 } catch (Exception e) {
                         System.out.println("SQLException: " + e.getMessage());
                         throw e;
-
                 }
         }
 }
