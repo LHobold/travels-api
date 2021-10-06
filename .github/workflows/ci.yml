@@ -24,3 +24,11 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+      
+    - name: Docker Build & Push Action
+      uses: mr-smithers-excellent/docker-build-push@v5.6
+      with:
+        image: lucashs42/travels-java
+        registry: docker.io
+        username: ${{ secrects.DOCKER_USERNAME }}
+        password: ${{ secrects.DOCKER_PASSWORD }}
