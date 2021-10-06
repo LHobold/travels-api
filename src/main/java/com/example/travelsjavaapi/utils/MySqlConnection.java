@@ -4,11 +4,14 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.Statement;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class MySqlConnection {
-    private static String dbUrl = "jdbc:mysql://localhost:3306/Travels";
-    private static String dbUsername = "admin";
-    private static String dbPassword = "admin";
+
+    private static Dotenv dotenv = Dotenv.load();
+    private static String dbUrl = dotenv.get("DB_URL");
+    private static String dbUsername = dotenv.get("DB_USERNAME");
+    private static String dbPassword = dotenv.get("DB_PASSWORD");
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(dbUrl, dbUsername, dbPassword);

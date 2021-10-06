@@ -1,0 +1,35 @@
+version: '3.1'
+
+services:
+  db:
+    container_name: db
+    image: mysql
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_USER: 'admin'
+      MYSQL_PASSWORD: 'admin'
+      MYSQL_DATABASE: 'Travels'
+      MYSQL_HOST: 'localhost'
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 5s
+      timeout: 20s
+      retries: 10
+
+  app:
+    container_name: app
+    build: .
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+      queue:
+        condition: service_started
+    command: npm run dev:server
+    ports:
+      - '3333:3333'
+    volumes:
+      - .:/home/app
+    environment:
