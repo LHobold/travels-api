@@ -5,15 +5,18 @@ import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.Statement;
 import io.github.cdimascio.dotenv.Dotenv;
+import io.jsonwebtoken.lang.Strings;
 
 public class MySqlConnection {
 
-    private static Dotenv dotenv = Dotenv.load();
-    private static String dbUrl = dotenv.get("DB_URL");
-    private static String dbUsername = dotenv.get("DB_USERNAME");
-    private static String dbPassword = dotenv.get("DB_PASSWORD");
+    private static Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+    private static String dbUrl = Strings.hasText(dotenv.get("DB_URL")) ? dotenv.get("DB_URL")
+            : "jdbc:mysql://localhost:3306/Travels";
+    private static String dbUsername = Strings.hasText(dotenv.get("DB_USERNAME")) ? dotenv.get("DB_USERNAME") : "admin";
+    private static String dbPassword = Strings.hasText(dotenv.get("DB_PASSWORD")) ? dotenv.get("DB_USERNAME") : "admin";
 
     public static Connection getConnection() throws SQLException {
+
         return DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
     }
 
