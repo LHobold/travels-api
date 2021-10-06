@@ -30,5 +30,5 @@ jobs:
       with:
         image: lucashs42/travels-java
         registry: docker.io
-        username: ${{ secrects.DOCKER_USERNAME }}
-        password: ${{ secrects.DOCKER_PASSWORD }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
