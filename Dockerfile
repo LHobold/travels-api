@@ -1,4 +1,8 @@
 FROM openjdk:11-jre-slim
-COPY --from=build /home/app/target/demo-0.0.1-SNAPSHOT.jar /usr/local/lib/demo.jar
+
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/usr/local/lib/demo.jar"]
+
+COPY ./build/libs/my-app-1.0-SNAPSHOT.jar /usr/app/
+WORKDIR /usr/app
+
+ENTRYPOINT ["java", "-jar", "my-app-1.0-SNAPSHOT.jar"]
