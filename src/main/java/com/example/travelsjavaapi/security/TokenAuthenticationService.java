@@ -20,7 +20,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class TokenAuthenticationService {
-    // EXPIRATION_TIME = 10 dias
+    // EXPIRATION_TIME = 15 minutes (test)
     static final long EXPIRATION_TIME = 15 * 60 * 1000;
     static final String SECRET = "R1hLMWPl612-BtlCR14_SlVTVmXfTyZT5M5DVdL8v4w_MRkSKcEZAAsP6NqUjtXzGCeNVecglYohxtUcd_wD21y4cVpWa0mLHwOdHanriKHckMbZX1easZY9RBZwixFUAupdWTbdYa3jLZQGvL9bHrMOdBOzUpH5BUOUfFUxcSE";
     static final String TOKEN_PREFIX = "Bearer";

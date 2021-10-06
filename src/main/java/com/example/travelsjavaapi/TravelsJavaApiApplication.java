@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TravelsJavaApiApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(TravelsJavaApiApplication.class, args);
 	}
 

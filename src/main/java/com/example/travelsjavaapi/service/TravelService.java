@@ -26,8 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.stereotype.Service;
 
-import lombok.var;
-
 @Service
 public class TravelService {
 
@@ -38,13 +36,13 @@ public class TravelService {
     }
 
     private LocalDateTime parseStartDate(JsonNode travel) {
-        var startDate = (String) travel.get("startDate").asText();
+        String startDate = (String) travel.get("startDate").asText();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
         return ZonedDateTime.parse(startDate, formatter.withZone(ZoneId.of("UTC"))).toLocalDateTime();
     }
 
     private LocalDateTime parseEndDate(JsonNode travel) {
-        var endDate = (String) travel.get("endDate").asText();
+        String endDate = (String) travel.get("endDate").asText();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
         return ZonedDateTime.parse(endDate, formatter.withZone(ZoneId.of("UTC"))).toLocalDateTime();
     }
