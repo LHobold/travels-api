@@ -11,7 +11,6 @@ public class MyListener {
 
     @EventListener(ApplicationReadyEvent.class)
     public void createMySqlTablesOnStart() throws Exception {
-
         try (Connection conn = MySqlConnection.getConnection()) {
             MySqlConnection.createTravelsTable(conn);
             MySqlConnection.createUsersTable(conn);
@@ -20,5 +19,4 @@ public class MyListener {
             System.out.println("An exception occoured while trying to create MySqlTables: " + ex);
         }
     }
-
 }

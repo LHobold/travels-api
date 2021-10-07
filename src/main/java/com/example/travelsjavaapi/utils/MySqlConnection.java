@@ -4,19 +4,33 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.Statement;
-import io.github.cdimascio.dotenv.Dotenv;
-import io.jsonwebtoken.lang.Strings;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
 public class MySqlConnection {
 
-    private static Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
-    private static String dbUrl = Strings.hasText(dotenv.get("DB_URL")) ? dotenv.get("DB_URL")
-            : "jdbc:mysql://localhost:3306/Travels";
-    private static String dbUsername = Strings.hasText(dotenv.get("DB_USERNAME")) ? dotenv.get("DB_USERNAME") : "admin";
-    private static String dbPassword = Strings.hasText(dotenv.get("DB_PASSWORD")) ? dotenv.get("DB_USERNAME") : "admin";
+    private static String dbUrl;
+    private static String dbUsername;
+    private static String dbPassword;
+
+    @Value("${DATABASE_URL:jdbc:mysql://localhost:3306/Travels}")
+    public void setDatabaseUrl(String db) {
+        dbUrl = db;
+    }
+
+    @Value("${DATABASE_USERNAME:admin}")
+    public void setDatabaseUser(String db) {
+        dbUsername = db;
+    }
+
+    @Value("${DATABASE_PASSWORD:admin}")
+    public void setDatabasePassword(String db) {
+        dbPassword = db;
+    }
 
     public static Connection getConnection() throws SQLException {
-
         return DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
     }
 

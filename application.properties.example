@@ -1,3 +1,5 @@
+# This file should be, by default, at src/main/resources to be able to be scanned by spring.
+
 #-------------------- server properties ---------------
 server.port=8080
 server.error.path=/error
