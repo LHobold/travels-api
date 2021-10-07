@@ -56,7 +56,6 @@ public class TravelController {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
                 }
 
-                System.out.println(createdTravel);
                 var uri = ServletUriComponentsBuilder.fromCurrentRequest().path((String.valueOf(createdTravel.getId())))
                                 .build().toUri();
 

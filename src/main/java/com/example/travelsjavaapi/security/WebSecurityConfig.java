@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.lang.Override;
@@ -64,8 +65,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Create default user
-        auth.inMemoryAuthentication().withUser("admin").password("password").roles("ADMIN");
+        // Create default user -- admin / password
+        auth.inMemoryAuthentication().withUser("admin")
+                .password("$2a$12$ehmMkOSG14buM.1Ujq4RMOo.Xgo95l94IW1wxY5QxmjcEilg1KbeK").roles("ADMIN");
 
         // UserDetailsService with BCrypt Password Encoder
         auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder());

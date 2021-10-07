@@ -44,7 +44,7 @@ public class MySqlConnection {
     }
 
     public static void createUsersTable(Connection conn) throws SQLException {
-        String query = "CREATE TABLE IF NOT EXISTS `Travels`.`Userss` (" + "`id` INT NOT NULL AUTO_INCREMENT,"
+        String query = "CREATE TABLE IF NOT EXISTS `Travels`.`Users` (" + "`id` INT NOT NULL AUTO_INCREMENT,"
                 + "`username` VARCHAR(45) NOT NULL," + "`password` VARCHAR(255) NOT NULL," + " PRIMARY KEY (`id`));";
 
         Statement stmt = conn.createStatement();
