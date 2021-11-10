@@ -15,6 +15,9 @@ import com.example.travelsjavaapi.utils.MySqlConnection;
 import com.example.travelsjavaapi.utils.ParseValues;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class TravelDao {
 
     private ParseValues parseValues;
