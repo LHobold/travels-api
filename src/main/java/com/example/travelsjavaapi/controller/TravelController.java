@@ -84,13 +84,10 @@ public class TravelController {
         @ResponseBody
         public ResponseEntity<Travel> updateTravel(@PathVariable("id") long id, @RequestBody String updateFields)
                         throws Exception {
-                Travel travelToUpdate = travelService.findTravelById(id);
 
-                if (travelToUpdate == null) {
-                        throw new NotFoundException("Could not find an travel with id: " + id);
-                }
-
-                Travel updatedTravel = travelService.updateTravel(updateFields, travelToUpdate);
+                // Travel updatedTravel = travelService.updateTravel(updateFields,
+                // travelToUpdate);
+                Travel updatedTravel = travelService.updateTravel(updateFields, id);
                 return ResponseEntity.ok(updatedTravel);
         }
 
