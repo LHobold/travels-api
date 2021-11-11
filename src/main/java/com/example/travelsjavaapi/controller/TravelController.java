@@ -13,10 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.http.HttpStatus;
 
 import com.example.travelsjavaapi.service.TravelService;
-import com.example.travelsjavaapi.exceptions.NotFoundException;
 import com.example.travelsjavaapi.model.Travel;
 
 import java.util.List;
@@ -31,31 +29,19 @@ public class TravelController {
 
         @GetMapping
         public ResponseEntity<List<Travel>> find() throws Exception {
-                if (travelService.findAllTravels().isEmpty()) {
-                        throw new NotFoundException("There are no travels registered");
-                }
-
-                return ResponseEntity.ok(travelService.findAllTravels());
+                List<Travel> travels = travelService.findAllTravels();
+                return ResponseEntity.ok(travels);
         }
 
         @GetMapping(path = "/{id}")
         public ResponseEntity<Travel> findOne(@PathVariable("id") long id) throws Exception {
                 Travel foundTravel = travelService.findTravelById(id);
-                if (foundTravel == null) {
-                        throw new NotFoundException("Could not find an travel with id: " + id);
-
-                }
                 return ResponseEntity.ok(foundTravel);
         }
 
         @PostMapping
         public ResponseEntity<Travel> createTravel(@RequestBody String travel) throws Exception {
                 Travel createdTravel = travelService.createTravel(travel);
-
-                if (createdTravel == null) {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-                }
-
                 var uri = ServletUriComponentsBuilder.fromCurrentRequest().path((String.valueOf(createdTravel.getId())))
                                 .build().toUri();
 
@@ -70,12 +56,6 @@ public class TravelController {
 
         @DeleteMapping(path = "/{id}")
         public ResponseEntity<Boolean> deleteOneTravel(@PathVariable("id") long id) throws Exception {
-                Travel foundTravel = travelService.findTravelById(id);
-
-                if (foundTravel == null) {
-                        throw new NotFoundException("Could not find an travel with id: " + id);
-                }
-
                 travelService.deleteTravel(id);
                 return ResponseEntity.noContent().build();
         }
@@ -84,11 +64,7 @@ public class TravelController {
         @ResponseBody
         public ResponseEntity<Travel> updateTravel(@PathVariable("id") long id, @RequestBody String updateFields)
                         throws Exception {
-
-                // Travel updatedTravel = travelService.updateTravel(updateFields,
-                // travelToUpdate);
                 Travel updatedTravel = travelService.updateTravel(updateFields, id);
                 return ResponseEntity.ok(updatedTravel);
         }
-
 }

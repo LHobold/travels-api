@@ -88,6 +88,11 @@ public class AppExceptionsHandler extends ResponseEntityExceptionHandler {
         return this.buildResponse(HttpStatus.BAD_REQUEST, ex);
     }
 
+    @ExceptionHandler(value = { InvalidAmountException.class })
+    public ResponseEntity<Object> handleInvalidAmountException(Exception ex) {
+        return this.buildResponse(HttpStatus.BAD_REQUEST, ex);
+    }
+
     // 401 EXCEPTIONS
     ///////////////////
 
@@ -115,6 +120,10 @@ public class AppExceptionsHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleSignatureException(Exception ex) {
         return this.buildResponse(HttpStatus.UNAUTHORIZED, ex, "JWT is malformated: not valid");
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private ResponseEntity<Object> buildResponse(HttpStatus status, Exception ex) {
         System.out.println("Exception: " + ex.getMessage());

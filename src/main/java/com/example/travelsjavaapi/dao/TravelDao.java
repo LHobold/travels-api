@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.travelsjavaapi.enumeration.TravelTypeEnum;
+import com.example.travelsjavaapi.exceptions.NotFoundException;
 import com.example.travelsjavaapi.model.Travel;
 import com.example.travelsjavaapi.utils.MySqlConnection;
 import com.example.travelsjavaapi.utils.ParseValues;
@@ -38,12 +39,9 @@ public class TravelDao {
 
                 ResultSet generatedKey = stmt.getGeneratedKeys();
 
-                if (generatedKey.next()) {
-                    travel.setId(generatedKey.getLong(1));
-                    return travel;
-                }
-
-                return null;
+                generatedKey.next();
+                travel.setId(generatedKey.getLong(1));
+                return travel;
             }
         }
     }
@@ -63,7 +61,6 @@ public class TravelDao {
                     foundTravel.setStartDate(rs.getTimestamp("startDate").toLocalDateTime());
                     foundTravel.setEndDate(rs.getTimestamp("endDate").toLocalDateTime());
                     return foundTravel;
-
                 }
 
                 return null;
@@ -100,6 +97,10 @@ public class TravelDao {
                     foundTravel.setStartDate(rs.getTimestamp("startDate").toLocalDateTime());
                     foundTravel.setEndDate(rs.getTimestamp("endDate").toLocalDateTime());
                     travels.add(foundTravel);
+                }
+
+                if (travels.isEmpty()) {
+                    throw new NotFoundException("There are no travels registered");
                 }
                 return travels;
             }

@@ -1,12 +1,13 @@
 package com.example.travelsjavaapi.service;
 
 import com.example.travelsjavaapi.dao.TravelDao;
-
+import com.example.travelsjavaapi.exceptions.InvalidAmountException;
 import com.example.travelsjavaapi.exceptions.NotFoundException;
 import com.example.travelsjavaapi.exceptions.WrongDateException;
 
 import com.example.travelsjavaapi.model.Travel;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -41,6 +42,10 @@ public class TravelService {
             throw new WrongDateException("The provided start date is greater than the end date!");
         }
 
+        if ((travel.getAmount().intValue()) < 0) {
+            throw new InvalidAmountException("The amount should be more than 0!");
+        }
+
         Travel createdTravel = travelDao.saveTravel(travel);
         return createdTravel;
     }
@@ -67,7 +72,13 @@ public class TravelService {
     }
 
     public Travel findTravelById(long id) throws Exception {
-        return travelDao.findById(id);
+        Travel foundTravel = travelDao.findById(id);
+
+        if (foundTravel == null) {
+            throw new NotFoundException("Could not find an travel with id: " + id);
+        }
+
+        return foundTravel;
     }
 
     public void deleteAllTravels() throws Exception {
