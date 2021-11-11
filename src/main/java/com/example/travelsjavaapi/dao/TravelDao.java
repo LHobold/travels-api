@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.travelsjavaapi.enumeration.TravelTypeEnum;
-import com.example.travelsjavaapi.exceptions.NotFoundException;
 import com.example.travelsjavaapi.model.Travel;
 import com.example.travelsjavaapi.utils.MySqlConnection;
 import com.example.travelsjavaapi.utils.ParseValues;
@@ -99,9 +98,6 @@ public class TravelDao {
                     travels.add(foundTravel);
                 }
 
-                if (travels.isEmpty()) {
-                    throw new NotFoundException("There are no travels registered");
-                }
                 return travels;
             }
         }

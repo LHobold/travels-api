@@ -68,7 +68,12 @@ public class TravelService {
     }
 
     public List<Travel> findAllTravels() throws Exception {
-        return travelDao.findAll();
+        List<Travel> travels = travelDao.findAll();
+        if (travels.isEmpty()) {
+            throw new NotFoundException("There are no travels registered");
+        }
+
+        return travels;
     }
 
     public Travel findTravelById(long id) throws Exception {
